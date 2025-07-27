@@ -113,7 +113,7 @@ function registerMacroRenderer() {
           onmouseout="this.style.transform=''; this.style.boxShadow=''"
           onmousedown="this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 2px rgba(0,0,0,${isDarkMode ? '0.15' : '0.1'})'"
           onmouseup="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 3px 6px rgba(0,0,0,${isDarkMode ? '0.2' : '0.1'})'">
-           <span style="margin-right:8px; font-size:16px; display:inline-block;">🚀</span>
+           <span style="margin-right:8px; font-size:16px; display:inline-block;">🔨</span>
            <span style="font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1;">${displayText || command}</span>
       </button>`,
     });
