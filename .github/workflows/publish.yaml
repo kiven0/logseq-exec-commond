@@ -8,6 +8,8 @@ on:
     paths-ignore:
       - 'README.md'
       - 'LICENSE'
+      - 'cmd-server/**'
+      - 'script/**'
   workflow_dispatch:
 
 env:
