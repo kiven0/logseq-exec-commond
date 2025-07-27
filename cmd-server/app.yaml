@@ -1,0 +1,39 @@
+# Logseq命令执行服务器配置文件
+
+# 服务器配置
+server:
+  # 服务器端口
+  port: 3666
+  # API前缀
+  prefix: /api/exec-cmd
+
+# 安全配置
+security:
+  # 是否启用命令白名单
+  enable_whitelist: true
+  # 命令白名单列表，只有在此列表中的命令才能执行
+  whitelist:
+    - echo
+    - code
+  # 是否启用token认证
+  enable_token: true
+  # API认证Token，留空则自动生成
+  token: "logseq-exec-token"
+
+# 日志配置
+logging:
+  # 日志级别：debug, info, warn, error
+  level: info
+  # 是否在控制台输出日志
+  console: true
+  # 日志文件路径
+  file: ./logs/server.log
+  # 是否记录命令执行日志
+  command_logging: true
+
+# 命令执行配置
+command:
+  # 命令执行超时时间（毫秒）
+  timeout: 30000
+  # 最大输出大小（字节）
+  max_output_size: 1048576  # 1MB

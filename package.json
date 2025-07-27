@@ -1,0 +1,32 @@
+{
+  "name": "logseq-exec-command",
+  "version": "0.1.0",
+  "description": "A Logseq plugin to execute custom commands with placeholders",
+  "main": "dist/index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "logseq",
+    "logseq-plugin",
+    "command-execution"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@logseq/libs": "^0.0.15",
+    "axios": "^1.11.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vite": "^4.5.14"
+  },
+  "logseq": {
+    "id": "logseq-exec-command",
+    "icon": "icon.svg",
+    "title": "Execute Command",
+    "main": "dist/index.html"
+  }
+}
