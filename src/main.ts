@@ -4,26 +4,40 @@ import { replacePlaceholders } from './utils/strutils';
 import { 
   generateSystemPropertySettings, 
   getSystemPropertiesDescriptionText,
-  generateUserPropertySettings, 
-  getUserVariables
+  generateUserPropertySettings
 } from './utils/propertiesutils';
 
-// 提供模型，用于处理点击事件
+// 提供模型，用于处理按钮点击事件和命令执行
 logseq.provideModel({
+  /**
+   * 执行命令处理函数
+   * 当用户点击渲染的按钮时触发此函数
+   * 流程：
+   * 1. 获取按钮中存储的命令字符串
+   * 2. 处理命令中的变量占位符（如 [_root_path]、[用户变量]）
+   * 3. 发送处理后的命令到命令执行服务器
+   * 4. 显示执行结果
+   * 
+   * @param e 点击事件对象，包含按钮的数据属性
+   */
   async executeCmd(e: any) {
     try {
-      // 获取命令并替换占位符
+      // 从按钮的 data-command 属性获取命令字符串
       const command = e.dataset.command;
       if (!command) {
         logseq.UI.showMsg('命令为空', 'warning', { timeout: 2000 });
         return;
       }
       
-      // 获取用户变量并替换占位符
-      const userVariables = getUserVariables();
-      const processedCommand = await replacePlaceholders(command, userVariables);
+      console.log('原始命令:', command);
       
-      // 执行命令
+      // 替换命令中的所有占位符（系统变量和用户变量）
+      // 支持 [变量名] 和 {变量名} 两种格式
+      const processedCommand = await replacePlaceholders(command, []);
+      
+      console.log('处理后的命令:', processedCommand);
+      
+      // 将处理后的命令发送到命令执行服务器
       await executeCommand(processedCommand);
     } catch (error) {
       console.error('命令执行错误:', error);
@@ -47,12 +61,14 @@ const settingsSchema = [...userPropertySettings, ...systemPropertySettings];
 
 /**
  * 注册斜线命令
+ * 用于在编辑器中快速插入命令执行按钮
  */
 function registerSlashCommand() {
   try {
     logseq.Editor.registerSlashCommand('ExecCommand', async () => {
+      // 获取用户设置的命令模板，如果未设置则使用默认值
       const command = logseq.settings?.commandTemplate || 'echo "Hello from Logseq"';
-      // 插入渲染器宏
+      // 插入渲染器宏，生成可点击的命令执行按钮
       await logseq.Editor.insertAtEditingCursor(
         `{{renderer :exec-command, ${command}, Open}}`
       );
@@ -70,11 +86,13 @@ function registerSlashCommand() {
 function registerMacroRenderer() {  
   logseq.App.onMacroRendererSlotted(({ slot, payload }) => {
     const [type, command, displayText] = payload.arguments;
+    console.log(type, command, displayText)
     if (type !== ':exec-command') return;
     const identity = slot.split('__')[1]?.trim()
+    console.log('identity', identity)
     if (!identity) return
     const key = 'exec-command-start_' + identity
-    
+     console.log('key', key)
     // 检测是否为暗黑模式
     const isDarkMode = document.documentElement.classList.contains('dark');
     const btnStyle = isDarkMode 

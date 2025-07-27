@@ -24,7 +24,7 @@ export interface UserDefinedVariable {
 export interface PluginSettings {
   /**
    * 命令模板，可以包含占位符
-   * 例如: code ${_graph_path}
+   * 例如: code [_root_path]
    */
   commandTemplate: string;
   /**
@@ -47,9 +47,9 @@ export interface PluginSettings {
   serverToken: string;
   
   /**
-   * 用户自定义变量列表
+   * 用户自定义变量列表（兼容旧版本）
    */
-  userVariables: UserDefinedVariable[];
+  userVariables?: UserDefinedVariable[];
 }
 
 /**
