@@ -1,14 +1,7 @@
 # Logseq 命令执行插件
 
 这是一个 Logseq 插件，允许你在笔记中嵌入可执行的命令按钮，点击后可以执行预定义的系统命令。
-
-## 功能特点
-
-- 在笔记中嵌入可点击的命令按钮
-- 支持自定义命令模板和变量替换
-- 内置变量支持（如图谱路径、当前日期等）
-- 用户自定义变量
-- 安全的命令执行（通过独立的命令执行服务器）
+因为 Logseq 对命令行的限制，这里的解决方案是通过一个独立的Node.js进程来执行命令，Logseq 需要执行的命令通过http 请求方式给到Node服务，Node服务执行命令并返回结果。
 
 ## 安装方法
 
@@ -16,12 +9,12 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yourusername/logseq-exec-commond.git
+git clone https://github.com/kiven0/logseq-exec-commond.git
 
 # 进入目录
 cd logseq-exec-commond
 
-# 安装依赖并构建插件
+# 安装依赖并构建插件 并启动服务
 ./install.sh
 ```
 
@@ -32,7 +25,7 @@ cd logseq-exec-commond
 3. 点击右上角三个点 -> 插件 -> 加载未打包的插件
 4. 选择插件目录
 
-### 3. 启动命令执行服务器
+### 3. 启动命令执行服务器(可选)
 
 ```bash
 # 进入服务器目录
@@ -40,6 +33,9 @@ cd cmd-server
 
 # 启动服务器
 ./start.sh
+
+# 停止服务器
+./stop.sh
 ```
 
 ## 使用方法
@@ -50,18 +46,27 @@ cd cmd-server
 2. 插件会在光标位置插入一个命令按钮
 3. 点击按钮执行预定义的命令
 
-### 使用内置变量
+### 使用变量
 
-插件支持以下内置变量：
+插件支持以下变量格式：
 
-- `${_graph_path}` - Logseq 图谱根目录路径
-- `${_base_path}` - 同上，提供兼容性
-- `${_date}` - 当前日期（格式可在设置中配置）
+1. **推荐格式**：使用方括号 `[变量名]`
 
-例如：
+#### 系统变量
+
+- `[_root_path]` - Logseq 图谱根目录路径
+- `[_date]` - 当前日期（YYYYMMDD格式）
+
+#### 用户自定义变量
+
+在插件设置中定义的变量，可以使用 `[变量名]` 格式引用。您可以自由定义变量名，如：`project_name`、`github_token`、`repo_url` 等，然后在命令中引用它们。
+
+例如，如果您在设置中定义了一个名为 `project_name` 的变量，值为 `my-awesome-project`，那么您可以在命令中使用 `[project_name]` 来引用它。
+
+#### 示例
 
 ```
-{{renderer :exec-command, code ${_base_path}, Open}}
+{{renderer :exec-command, code [_root_path]/projects, Open}}
 ```
 
 ### 自定义命令
@@ -76,6 +81,8 @@ cd cmd-server
 - **服务器URL**：命令执行服务器的地址
 - **服务器Token**：用于API认证的令牌
 - **用户自定义变量**：添加自己的变量，可在命令中使用
+  - 变量名可以自由定义（如：`project_name`、`github_token`、`repo_url` 等）
+  - 在命令中使用 `[变量名]` 格式引用这些变量
 
 ## 命令执行服务器
 
@@ -83,9 +90,6 @@ cd cmd-server
 
 - 命令白名单过滤
 - Token 认证
-- 命令执行超时控制
-- 输出大小限制
-- 详细的日志记录
 
 ### 服务器管理
 

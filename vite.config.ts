@@ -14,6 +14,8 @@ export default defineConfig({
     minify: 'esbuild',
     sourcemap: true,
     emptyOutDir: true,
+    // 复制静态资源到构建目录
+    assetsInclude: ['icon.png'],
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
